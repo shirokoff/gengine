@@ -2,7 +2,6 @@ function Game(screen){
 
     var _this = this;
 
-    this.backBuffer;
     this.activeState;
     this.frameRate = 60;
     this.lastTickTime;
@@ -17,6 +16,11 @@ function Game(screen){
 
     this.screenWidth = canvas.getAttribute("width");
     this.screenHeight= canvas.getAttribute("height");
+
+    this.backBuffer = document.createElement("canvas");
+    this.backBuffer.setAttribute("width", this.screenWidth);
+    this.backBuffer.setAttribute("height", this.screenHeight);
+    this.bscreen = this.backBuffer.getContext("2d");
 
     /* --------------- Init keyboard ----------------- */
 
@@ -60,10 +64,16 @@ Game.prototype.setState = function(state){
 Game.prototype.render = function(){
 
     // clear screen
-    this.screen.fillStyle = "rgb(255,255,255)";
-    this.screen.fillRect(0, 0, this.screenWidth, this.screenHeight);
+    this.screen.clearRect(0, 0, this.screenWidth, this.screenHeight);
 
-    this.activeState.render(this.screen);
+    // put image from buffer to screen
+    this.screen.drawImage(this.backBuffer, 0, 0);
+
+    // clear backbuffer
+    this.bscreen.clearRect(0, 0, this.screenWidth, this.screenHeight);
+
+    // draw scene to backbuffer
+    this.activeState.render();
 };
 
 Game.prototype.keyboard = function(){
@@ -138,7 +148,7 @@ GameState_1.prototype = new GameState();
 GameState_1.prototype.render = function(){
     var x = this.x;
     var y = this.y;
-    var screen = this.game.screen;
+    var screen = this.game.bscreen;
     screen.fillStyle="rgb(255,0,0)";
     screen.fillRect(x, y, 20, 20);
 };
@@ -174,7 +184,7 @@ function GameState_2(game){
 GameState_2.prototype = new GameState();
 
 GameState_2.prototype.render = function(){
-    var screen = this.game.screen;
+    var screen = this.game.bscreen;
     screen.fillStyle="rgb(0,255,0)";
     screen.fillRect(100,100,200,200);
 }
