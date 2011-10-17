@@ -1,3 +1,9 @@
+try {
+    log = console ? console.log : function(p){alert(p)};
+} catch(e) {
+    alert(e.message);
+}
+
 function Game(screen){
 
     var _this = this;
@@ -29,16 +35,18 @@ function Game(screen){
     document.addEventListener(
         "keydown",
         function(e){
-            console.log(e.which);
+            log(e.which);
             _this.keys[e.which] = true;
-        }
+        },
+        false
     );
 
     document.addEventListener(
         "keyup",
         function(e){
             _this.keys[e.which] = false;
-        }
+        },
+        false
     );
 
     /* --------------- Init stetes----------------- */
@@ -139,8 +147,21 @@ GameState.prototype.tick = function(){};
 
 function GameState_1(game){
     this.game = game;
-    this.x = 0;
-    this.y = 0;
+    //this.x = 0;
+    //this.y = 0;
+
+    this.objects = [];
+
+    for (var i = 0; i < 20; i++) {
+        this.objects.push(new Sprite({img : document.getElementById("sprite1"), x : 10, y : 10}));
+    }
+
+    this.pos = [];
+
+    for (i = 0; i < 20; i++) {
+        this.pos.push([0, 0]);
+    }
+
 }
 
 GameState_1.prototype = new GameState();
@@ -149,8 +170,14 @@ GameState_1.prototype.render = function(){
     var x = this.x;
     var y = this.y;
     var screen = this.game.bscreen;
-    screen.fillStyle="rgb(255,0,0)";
-    screen.fillRect(x, y, 20, 20);
+    //screen.fillStyle="rgb(255,0,0)";
+    //screen.fillRect(x, y, 20, 20);
+
+    for (var i = 0; i < this.objects.length; i++) {
+        this.objects[i].x = this.pos[i].x;
+        this.objects[i].y = this.pos[i].y;
+        this.objects[i].draw(screen);
+    }
 };
 
 GameState_1.prototype.tick= function(){
@@ -158,21 +185,27 @@ GameState_1.prototype.tick= function(){
         this.game.setState("state2");
     }
 
+    var x = this.objects[0].x;
+    var y = this.objects[0].y;
+
     if (this.game.keys[39]) {
-        this.x += 3;
+        x += 3;
     }
 
     if (this.game.keys[37]) {
-        this.x -= 3;
+        x -= 3;
     }
 
     if (this.game.keys[38]) {
-        this.y -= 3;
+        y -= 3;
     }
 
     if (this.game.keys[40]) {
-        this.y += 3;
+        y += 3;
     }
+
+    this.pos.pop();
+    this.pos.unshift([x, y]);
 };
 
 /* ----------------- GameState_2 --------------------- */
@@ -187,7 +220,7 @@ GameState_2.prototype.render = function(){
     var screen = this.game.bscreen;
     screen.fillStyle="rgb(0,255,0)";
     screen.fillRect(100,100,200,200);
-}
+};
 
 GameState_2.prototype.tick= function(){
     if (this.game.keys[51]) {
@@ -201,3 +234,37 @@ function Keyboard() {};
 
 //Keyboard.prototype.
 
+/* ----------------- Sprite ------------------------ */
+
+function Sprite(o){
+    this.img = o.img;
+    this.width = o.width;
+    this.height = o.height;
+    this.x = o.x;
+    this.y = o.y;
+}
+
+Sprite.prototype.draw = function(ctx){
+    ctx.drawImage(this.img, this.x, this.y);
+};
+
+/* ----------------- Animated Sprite --------------- */
+
+function AnimatedSprite(o){
+    this.img = o.img;
+    this.width = o.width;
+    this.height = o.height;
+    this.x = o.x;
+    this.y = o.y;
+
+    this.imageWidth  = this.img.width;
+    this.imageHeight = this.img.height;
+
+    // Number of vertically aligned frames
+    this.frames = (this.imageHeight / this.height) << 0;
+}
+
+Sprite.prototype.draw = function(ctx){
+    var frame = 0;
+    ctx.drawImage(this.img, this.x, this.y);
+};
