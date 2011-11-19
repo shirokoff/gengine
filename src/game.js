@@ -129,3 +129,7 @@ Game.prototype.tick = function(){
     this.activeState.tick();
 };
 
+include("animatedsprite.js");
+include("keyboard.js");
+include("sprite.js");
+include("state.js");

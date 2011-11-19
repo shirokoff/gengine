@@ -21,16 +21,9 @@ function GameState_1(game){
 
     this.objects = [];
 
-    for (var i = 0; i < 20; i++) {
+    for (var i = 0; i < 300; i++) {
         this.objects.push(new Sprite({img : document.getElementById("sprite1"), x : 10, y : 10}));
     }
-
-    this.pos = [];
-
-    for (i = 0; i < 20; i++) {
-        this.pos.push([0, 0]);
-    }
-
 }
 
 GameState_1.prototype = new GameState();
@@ -42,9 +35,7 @@ GameState_1.prototype.render = function(){
     //screen.fillStyle="rgb(255,0,0)";
     //screen.fillRect(x, y, 20, 20);
 
-    for (var i = 0; i < this.objects.length; i++) {
-        this.objects[i].x = this.pos[i].x;
-        this.objects[i].y = this.pos[i].y;
+    for (var i = this.objects.length - 1; i >= 0; i--) {
         this.objects[i].draw(screen);
     }
 };
@@ -73,8 +64,10 @@ GameState_1.prototype.tick= function(){
         y += 3;
     }
 
-    this.pos.pop();
-    this.pos.unshift([x, y]);
+    this.objects.unshift(this.objects.pop());
+
+    this.objects[0].x = x;
+    this.objects[0].y = y;
 };
 
 /* ----------------- GameState_2 --------------------- */
