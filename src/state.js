@@ -21,8 +21,10 @@ function GameState_1(game){
 
     this.objects = [];
 
-    for (var i = 0; i < 300; i++) {
-        this.objects.push(new Sprite({img : document.getElementById("sprite1"), x : 10, y : 10}));
+    var size = 200;
+
+    for (var i = 0; i < size; i++) {
+        this.objects.push(new Sprite({img : document.getElementById("sprite1"), x : 10, y : 10, width : 16, height : 16, scale : (1 + Math.sin(Math.PI * i / (size / 2)))}));
     }
 }
 
@@ -36,6 +38,7 @@ GameState_1.prototype.render = function(){
     //screen.fillRect(x, y, 20, 20);
 
     for (var i = this.objects.length - 1; i >= 0; i--) {
+    //for (var i =  0; i < this.objects.length; i++) {
         this.objects[i].draw(screen);
     }
 };
@@ -49,19 +52,19 @@ GameState_1.prototype.tick= function(){
     var y = this.objects[0].y;
 
     if (this.game.keys[39]) {
-        x += 3;
+        x += 1;
     }
 
     if (this.game.keys[37]) {
-        x -= 3;
+        x -= 1;
     }
 
     if (this.game.keys[38]) {
-        y -= 3;
+        y -= 1;
     }
 
     if (this.game.keys[40]) {
-        y += 3;
+        y += 1;
     }
 
     this.objects.unshift(this.objects.pop());

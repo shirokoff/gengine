@@ -9,7 +9,7 @@ function Game(screen){
     var _this = this;
 
     this.activeState;
-    this.frameRate = 60;
+    this.frameRate = 30;
     this.lastTickTime;
 
 
@@ -133,3 +133,4 @@ include("animatedsprite.js");
 include("keyboard.js");
 include("sprite.js");
 include("state.js");
+include("particle.js");
