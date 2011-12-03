@@ -1,15 +1,22 @@
-try {
-    log = console ? console.log : function(p){alert(p)};
-} catch(e) {
-    alert(e.message);
-}
+
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function(/* function */ callback, /* DOMElement */ element){
+                window.setTimeout(callback, 1000 / 60);
+            };
+})();
 
 function Game(screen){
 
     var _this = this;
 
+    this.tickRate = 60;
     this.activeState;
-    this.frameRate = 30;
     this.lastTickTime;
 
 
@@ -35,7 +42,6 @@ function Game(screen){
     document.addEventListener(
         "keydown",
         function(e){
-            log(e.which);
             _this.keys[e.which] = true;
         },
         false
@@ -60,9 +66,21 @@ function Game(screen){
 
     /* --------------- Init start ----------------- */
 
-    this.nextTickTimeout = 1000 / this.frameRate << 0;
+    this.nextTickTimeout = 1000 / this.tickRate << 0;
 
     this.startLoop();
+    this.animate();
+}
+
+Game.prototype.animate = function(){
+    var _this = this;
+
+    if (this.end) {
+        return;
+    }
+
+    requestAnimFrame(function(){_this.animate();});
+    this.render();
 }
 
 Game.prototype.setState = function(state){
@@ -109,7 +127,6 @@ Game.prototype.loop = function(){
     }
 
     // Do all the stuff
-    this.render();
     this.tick();
 
     var now = Date.now();
