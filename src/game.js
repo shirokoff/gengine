@@ -79,7 +79,7 @@ Game.prototype.animate = function(){
         return;
     }
 
-    requestAnimFrame(function(){_this.animate();});
+    requestAnimFrame(function(){_this.animate();}, this.screen);
     this.render();
 }
 

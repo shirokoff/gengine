@@ -10,22 +10,46 @@ function Sprite(o){
     this.rotate = o.rotate || 0;
     this.scale = o.scale || 1;
 
+    this.pivot = o.pivot;
+
     this.x = o.x;
     this.y = o.y;
 }
 
 Sprite.prototype.draw = function(ctx){
 
-    var localX = this.width / 2 * this.scale << 0;
-    var localY = this.height / 2 * this.scale << 0;
+    var transformed = this.scale != 1 || this.rotate != 0;
+    var x = this.x;
+    var y = this.y;
 
-    ctx.save();
+    if (transformed) {
+        x = 0;
+        y = 0;
+    }
 
-    ctx.translate(this.x, this.y);
-    ctx.rotate(this.rotate);
-    ctx.scale(this.scale, this.scale);
+    if (this.pivot === "center") {
+        x -= this.width / 2;
+        y -= this.height / 2;
+    }
 
-    ctx.drawImage(this.img, -this.width / 2, -this.height / 2);
+    // Transformations applied
+    if (transformed) {
+        ctx.save();
 
-    ctx.restore();
+        ctx.translate(this.x, this.y);
+
+        if (this.rotate != 0) {
+            ctx.rotate(this.rotate);
+        }
+
+        if (this.scale != 1) {
+            ctx.scale(this.scale, this.scale);
+        }
+
+        ctx.drawImage(this.img, x, y);
+
+        ctx.restore();
+    } else {
+        ctx.drawImage(this.img, x, y);
+    }
 };

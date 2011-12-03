@@ -24,7 +24,8 @@ function GameState_1(game){
     var size = 200;
 
     for (var i = 0; i < size; i++) {
-        this.objects.push(new Sprite({img : document.getElementById("sprite1"), x : 10, y : 10, width : 16, height : 16, scale : (1 + Math.sin(Math.PI * i / (size / 2)))}));
+        this.objects.push(new Sprite({img : document.getElementById("sprite1"), x : 100, y : 100, width : 16, height : 16, scale : (1 + Math.sin(Math.PI * i / (size / 2))) , pivot : "center" }));
+        //this.objects.push(new Sprite({img : document.getElementById("sprite1"), x : 10, y : 10, width : 16, height : 16}));
     }
 }
 
