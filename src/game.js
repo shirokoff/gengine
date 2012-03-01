@@ -55,11 +55,27 @@ function Game(screen){
         false
     );
 
+    canvas.addEventListener(
+        "mousedown",
+        function(e) {
+            _this.mouse(e);
+        }
+    );
+
+    canvas.addEventListener(
+        "mouseup",
+        function(e) {
+            _this.mouse(e);
+        }
+    );
+
     /* --------------- Init stetes----------------- */
 
     this.states = {
-        "state1" : new GameState_1(this),
-        "state2" : new GameState_2(this)
+        //"state1" : new GameState_1(this),
+        //"state2" : new GameState_2(this)
+
+        "state1" : new CometState(this)
     };
 
     this.setState("state1");
@@ -106,8 +122,8 @@ Game.prototype.keyboard = function(){
     this.activeState.keyboard();
 };
 
-Game.prototype.mouse = function(){
-    this.activeState.mouse();
+Game.prototype.mouse = function(e){
+    this.activeState.mouse(e);
 };
 
 Game.prototype.startLoop = function(){
@@ -158,6 +174,7 @@ include("keyboard.js");
 include("sprite.js");
 include("state.js");
 
-include("state_1.js");
+//include("state_1.js");
+include("comet_state.js");
 
 include("particle.js");
