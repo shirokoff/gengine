@@ -1,20 +1,24 @@
 function CometState(game){
     this.game = game;
 
-    this.cometSprite = new Sprite({img : document.getElementById("sprite1"), x : 100, y : 100, width : 16, height : 16, pivot : "center" });
+    this.cometSprite = new Sprite({img : game.load("i/circle.png"), x : 100, y : 100, width : 16, height : 16, pivot : "center" });
 
     this.cometSpeed = [0, 0];
 
 
     this.planets = [
-        { x : 100, y : 100, size : 1 },
-        { x : 500, y : 300, size : 2 },
-        { x : 200, y : 380, size : 1 }
+        { x : 100, y : 100, size : 1, img : 2 },
+        { x : 500, y : 300, size : 2, img : 1 },
+        { x : 200, y : 380, size : 2, img : 1 },
+        { x : 600, y : 550, size : 2, img : 2 }
     ]
 
     for (var i = 0; i < this.planets.length; i++) {
-        this.planets[i].sprite = new Sprite({img : document.getElementById("sprite1"), x : this.planets[i].x, y : this.planets[i].y, width : 16, height : 16, pivot : "center", scale : this.planets[i].size});
+        this.planets[i].sprite = new Sprite({img : game.load("i/asteroid_00" + this.planets[i].img + ".png"), x : this.planets[i].x, y : this.planets[i].y, width : 128, height : 128, pivot : "center", scale : this.planets[i].size/4});
     }
+
+    this.planetSize = 16;
+    this.rocketSize = 16;
 }
 
 CometState.prototype = new GameState();
@@ -26,6 +30,8 @@ CometState.prototype.render = function(){
 
 
     for (var i = 0; i < this.planets.length; i++) {
+
+        this.planets[i].sprite.rotate += 0.001 / this.planets[i].size;
         this.planets[i].sprite.draw(screen);
     }
 
@@ -53,7 +59,7 @@ CometState.prototype.tick= function(){
         var influence = (Math.pow(planet.size, 2) / dist) * (window.k || 5);
 
         // Collision
-        if (dist <= planet.size * planet.sprite.width / 2 + 8) {
+        if (dist <= planet.size * this.planetSize + this.rocketSize / 2) {
             delete this.cometOrigin;
             this.started = false;
         }
@@ -62,25 +68,25 @@ CometState.prototype.tick= function(){
         this.cometSpeed[1] += ((planet.y - comet.y) / dist) * influence;
     }
 
-    if (comet.x + 8 >= this.game.screenWidth) {
+    if (comet.x + this.rocketSize/2 > this.game.screenWidth) {
         this.cometSpeed[0] *= -1;
-        comet.x = this.game.screenWidth - 8;
+        comet.x = this.game.screenWidth - this.rocketSize/2 - 1;
 
     }
 
-    if (comet.x <= 8) {
+    if (comet.x < this.rocketSize/2) {
         this.cometSpeed[0] *= -1;
-        comet.x = 8;
+        comet.x = this.rocketSize/2 + 1;
     }
 
-    if (comet.y + 8 >= this.game.screenHeight) {
+    if (comet.y + this.rocketSize/2 > this.game.screenHeight) {
         this.cometSpeed[1] *= -1;
-        comet.y = this.game.screenHeight - 8;
+        comet.y = this.game.screenHeight - this.rocketSize/2 - 1;
     }
 
-    if (comet.y <= 8) {
+    if (comet.y < this.rocketSize/2) {
         this.cometSpeed[1] *= -1;
-        comet.y = 8;
+        comet.y = this.rocketSize/2 + 1;
     }
 };
 

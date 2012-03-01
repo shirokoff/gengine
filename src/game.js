@@ -18,7 +18,7 @@ function Game(screen){
     this.tickRate = 60;
     this.activeState;
     this.lastTickTime;
-
+    this.imageCache = {};
 
     /* --------------- Init canvas ----------------- */
     var canvas = document.querySelector('#' + screen);
@@ -168,6 +168,18 @@ Game.prototype.loop = function(){
 Game.prototype.tick = function(){
     this.activeState.tick();
 };
+
+Game.prototype.load = function(src){
+
+    if (this.imageCache[src]) {
+        return this.imageCache[src];
+    }
+
+    var i = new Image();
+    i.src = src;
+    this.imageCache[src] = i;
+    return i;
+}
 
 include("animatedsprite.js");
 include("keyboard.js");
