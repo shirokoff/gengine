@@ -79,7 +79,7 @@ Game.prototype.animate = function(){
         return;
     }
 
-    requestAnimFrame(function(){_this.animate();}, this.screen);
+    window.requestAnimFrame(function(){_this.animate();});
     this.render();
 }
 
@@ -129,17 +129,24 @@ Game.prototype.loop = function(){
     // Do all the stuff
     this.tick();
 
-    var now = Date.now();
-    var timeout = this.nextTickTimeout - (now - this.lastTickTime);
-    timeout = timeout < 0 ? 0 : timeout;
-    this.lastTickTime = now;
-
     setTimeout(
         function(){
             _this.loop();
         },
-        timeout
+        1000 / this.tickRate << 0
     );
+
+    //var now = Date.now();
+    //var timeout = this.nextTickTimeout - (now - this.lastTickTime);
+    //timeout = timeout < 0 ? 0 : timeout;
+    //this.lastTickTime = now;
+
+    //setTimeout(
+    //    function(){
+    //        _this.loop();
+    //    },
+    //    timeout
+    //);
 };
 
 Game.prototype.tick = function(){
@@ -150,4 +157,7 @@ include("animatedsprite.js");
 include("keyboard.js");
 include("sprite.js");
 include("state.js");
+
+include("state_1.js");
+
 include("particle.js");
